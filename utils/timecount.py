@@ -28,14 +28,34 @@ class TimeStats(object):
         return (resource.getrusage(resource.RUSAGE_SELF).ru_utime+
                 resource.getrusage(resource.RUSAGE_SELF).ru_stime)
 
-    def show_time(self, name):
+    def reset_clock(self, name):
+        self.clocks[name] = 0
+        self.start_clock(name)
+
+    def show_time(self, name, level='second'):
         seconds = self.check_time(name)
         if name in self.clocks.keys():
             seconds = self.clocks[name]
-        minutes = int(seconds/60)
-        hours = int(minutes/60)
-        days = int(hours/24)
-        hours = hours%24
-        minutes = minutes%60
-        seconds = seconds%60
-        return '%d days %d hours %d minutes %f seconds'%(days, hours, minutes, seconds) 
+        if level=='day':
+            minutes = seconds//60
+            hours = minutes//60
+            days = hours//24
+            hours = hours%24
+            minutes = minutes%60
+            seconds = seconds%60
+            return '%d days %d hours %d minutes %f seconds'%(days, hours, minutes, seconds)
+        elif level=='hour':
+            minutes = seconds//60
+            hours = minutes//60
+            minutes = minutes%60
+            seconds = seconds%60
+            return 'hours %d minutes %f seconds'%(hours, minutes, seconds)
+        elif level=='minute':
+            minutes = seconds//60
+            seconds = seconds%60
+            return '%d minutes %f seconds'% (minutes, seconds)
+        elif level=='second':
+            return '%f seconds'%(seconds)
+        else:
+            raise RuntimeError('leve=%s unhandled'%level)
+            

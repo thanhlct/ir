@@ -20,15 +20,17 @@ class SimpleParser(object):
 
     def parse_an_id_maker(self, id_maker):
         self.time_stat.start_clock('parser')
+        self.time_stat.start_clock('block')
         processed = 0
         for doc_id, doc_des in id_maker:
             #print '--------process doc_id', doc_id, '|', doc_des['filename']
             self.parse_a_document(doc_id, doc_des['path'])
             processed +=1
             if processed%10==0:
-                print '......%d/%d took %s'%(processed, len(id_maker), self.time_stat.show_time('parser'))
-                break
-                #pdb.set_trace()
+                print '......%d/%d took %s'%(processed, len(id_maker), self.time_stat.show_time('parser', level='day')),
+                self.time_stat.end_clock('block')
+                print '\t(this block took %s)'%(self.time_stat.show_time('block', level='minute'))
+                self.time_stat.reset_clock('block')
 
         self.time_stat.end_clock('parser')
         print 'Parsing all document tooks', self.time_stat.show_time('parser')
