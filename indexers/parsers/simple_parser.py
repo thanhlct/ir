@@ -2,30 +2,36 @@ import pdb
 
 from ir.utils.support_functions import read_gz_text_file, read_gz_file, gz_text_file_line_iter
 from ir.utils.timecount import TimeStats
+from ir.utils.io_functions import object_to_file, file_to_object, file_exists
 
 class SimpleParser(object):
     def __init__(self, config):
         self.full_config = config
+        self.name = self.__class__.__name__
+        self.config = config['parser'][self.name]
+
         self.title_posting_list = {}
         self.heading_posting_list = {}
         self.geography_posting_list = {}
         self.text_posting_list = {}
+        self.posting_lists = [self.title_posting_list, self.heading_posting_list, self.geography_posting_list, self.text_posting_list]
 
         self.time_stat = TimeStats()
 
-    def parse_an_id_maker(self, id_maker):
+    def parse_an_id_maker(self, id_maker): 
         self.time_stat.start_clock('parser')
         processed = 0
         for doc_id, doc_des in id_maker:
             #print '--------process doc_id', doc_id, '|', doc_des['filename']
             self.parse_a_document(doc_id, doc_des['path'])
             processed +=1
-            if processed%500==0:
-                print '......%d/%d tooks %fs'%(processed, len(id_maker), self.time_stat.check_time('parser'))
+            if processed%10==0:
+                print '......%d/%d took %s'%(processed, len(id_maker), self.time_stat.show_time('parser'))
+                break
                 #pdb.set_trace()
 
         self.time_stat.end_clock('parser')
-        print 'total tooks', self.time_stat.clocks['parser']
+        print 'Parsing all document tooks', self.time_stat.show_time('parser')
         pdb.set_trace()
 
     def get_posting_list(self, xml_tag):

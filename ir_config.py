@@ -18,6 +18,10 @@ config={
         },
     },
     'parser':{
-        'type': None
+        'type': None,
+        'debug': True,
+        'SimpleParser':{
+            'temporary_file': as_project_path('private/temporary_files/parser_results.pkl'),
+        },
     }
 }
