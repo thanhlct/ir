@@ -2,7 +2,7 @@ import pdb
 
 from ir.utils.support_functions import read_gz_text_file, read_gz_file, gz_text_file_line_iter
 from ir.utils.timecount import TimeStats
-from ir.utils.io_functions import object_to_file, file_to_object, file_exists
+from ir.utils.io_functions import object_to_file, file_to_object
 
 class SimpleParser(object):
     def __init__(self, config):
@@ -18,7 +18,7 @@ class SimpleParser(object):
 
         self.time_stat = TimeStats()
 
-    def parse_an_id_maker(self, id_maker): 
+    def parse_an_id_maker(self, id_maker):
         self.time_stat.start_clock('parser')
         processed = 0
         for doc_id, doc_des in id_maker:
@@ -32,6 +32,7 @@ class SimpleParser(object):
 
         self.time_stat.end_clock('parser')
         print 'Parsing all document tooks', self.time_stat.show_time('parser')
+        object_to_file(self.posting_lists, self.config['temporary_file'])
         pdb.set_trace()
 
     def get_posting_list(self, xml_tag):
