@@ -49,7 +49,7 @@ class TimeStats(object):
             hours = minutes//60
             minutes = minutes%60
             seconds = seconds%60
-            return 'hours %d minutes %f seconds'%(hours, minutes, seconds)
+            return '%d hours %d minutes %f seconds'%(hours, minutes, seconds)
         elif level=='minute':
             minutes = seconds//60
             seconds = seconds%60

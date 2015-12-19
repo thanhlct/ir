@@ -1,5 +1,7 @@
 import os
 
+from ir.utils.support_functions import deep_copy
+
 class CountIDMaker(object):
     def __init__(self, cfg):
         self.id_mapping = {}
@@ -26,12 +28,19 @@ class CountIDMaker(object):
                 filename = filename.split('.')[0]
                 self.id_mapping[count-1]={'path': path, 'filename': filename}
         self.total_doc_number=count
+        self.id_keys = self.id_mapping.keys()
 
     def __getitem__(self, doc_id):
         return self.id_mapping[doc_id]
 
     def __len__(self):
-        return self.total_doc_number
+        return len(self.id_mapping) #self.total_doc_number
     def __iter__(self):
         for doc_id in self.id_mapping.keys():
             yield doc_id, self[doc_id]
+
+    def get_sub_id_maker(self, from_id, to_id):
+        maker = CountIDMaker(self.full_config)
+        for key in self.id_keys[from_id: to_id+1]:
+            maker.id_mapping[key] = deep_copy(self[key])
+        return maker

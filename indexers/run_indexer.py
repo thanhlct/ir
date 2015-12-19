@@ -4,6 +4,7 @@ import autopath
 from ir.utils.config import Config
 from ir.indexers.docid_makers.count_id_maker import CountIDMaker
 from ir.indexers.parsers.simple_parser import SimpleParser
+from ir.indexers.parsers.multi_process_parser import MultiProcessParser
 
 
 def main():
@@ -12,8 +13,11 @@ def main():
     id_maker = CountIDMaker(config) 
     id_maker.make_id_from_file()
 
-    parser = SimpleParser(config)
+    #parser = SimpleParser(config)
+    parser = MultiProcessParser(config)
     parser.parse_an_id_maker(id_maker)
+
+    print 'Indexing completed'
 
 if __name__=='__main__':
     main()

@@ -1,5 +1,6 @@
 import gzip
 import codecs
+import copy
 
 def read_gz_file(path):
     zf = gzip.open(path, 'rb')
@@ -22,3 +23,6 @@ def gz_text_file_line_iter(path, encoding='utf-8'):
     for line in contents.readlines():
         yield line
     zf.close()
+
+def deep_copy(o):
+    return copy.deepcopy(o)
