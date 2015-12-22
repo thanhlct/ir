@@ -25,8 +25,8 @@ config={
         },
         'MultiProcessParser':{
             'temporary_file': as_project_path('private/temporary_files/parser_results.pkl'),
-            'block_size': 1000,
-            'sleep_for_result': 10,
+            'block_size': 10,
+            'sleep_for_result': 2,
             'max_thread_used':2,#not supported since RAM too big
         },
     }
