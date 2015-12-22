@@ -41,7 +41,9 @@ class OneBlockParser(Process):
 
     def parse_a_document(self, doc_id, path):
         posting_list = None
+        line_count = 0
         for line in gz_text_file_line_iter(path):
+            line_count += 1
             line = line.strip()
             if line=='':
                 continue
@@ -50,7 +52,7 @@ class OneBlockParser(Process):
                 posting_list = self.get_posting_list(tag)
                 continue
             if posting_list == None:#no posting list was activited, ignore the word
-                print '******Warning: the line [%s] was ignored'%line
+                print '******Warning: the line [%d] in [%d, %s] was ignored'%(line_count, doc_id, path)
                 continue
             term = self._extract_term(line)
             if term in posting_list.keys():
@@ -108,6 +110,7 @@ class MultiProcessParser(object):
         result_q = Queue()
         split = 0
         thread_count = 0
+        #TODO: The number of thread used should be limited by configuration file and the the merge results (next while should run in a separated thread
         while split<len(id_maker):
             thread_count +=1
             sub_id_maker = id_maker.get_sub_id_maker(split, split+self.block_size-1)
@@ -123,6 +126,7 @@ class MultiProcessParser(object):
         print '---Started total %d parsing threads'%thread_count
         
         result_count = 0
+        #TODO: Probabiliy need some soft condition than that in the while below, in the case of a tread broken, the while never terminate
         while(result_count<thread_count):
             if result_q.empty():
                 print 'wait for %d seconds for new results'%self.sleep_for_result
