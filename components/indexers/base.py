@@ -38,7 +38,7 @@ class PostingListMaker(object):
         pass
     def build_from_documents(self, docs, parser):
         '''Buid posting list for all documents given.'''
-       pass 
+        pass 
     def get_posting_list(term):
         '''Get a full posting list of the term given.'''
         pass
