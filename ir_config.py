@@ -23,10 +23,10 @@ config={
         'debug': True,
         'FrequencyPostList':{
             'read_file_fun': read_gz_text_file,
-            'temporary_file': as_project_path('private/temporary_files/postlist_results.pkl'),
+            'postlist_file': as_project_path('private/temporary_files/postlist_results.pkl'),
             'block_size': 10,
             'sleep_for_result': 2,
-            'limited_process_number':3,#not supported since RAM too big
+            'limited_process_number':3,
         },
     },
     'parser':{
