@@ -30,6 +30,7 @@ class FrequencyPostList(PostingListMaker):
 
     def _write_postlist(self, postlist):
         path = self.config['postlist_file']
+        print 'Saving postlist result to [%s]'%path
         object_to_file(postlist, path)
         
     def build_from_id_maker(self, id_maker, parser):
@@ -48,9 +49,10 @@ class FrequencyPostList(PostingListMaker):
 
         self.timer.start_clock('make_postlist')
         self.postlist = self.build_from_documents(docs, parser)
-        #self._write_postlist(self.postlist)
         self.timer.end_clock('make_postlist')
         print '---Build postlist for %d files finised after %s'%(len(id_maker), self.timer.show_time('make_postlist', level='day'))
+        self._write_postlist(self.postlist)
+
         return self.postlist
 
     def build_from_documents(self, docs, parser):
@@ -85,8 +87,8 @@ class FrequencyPostList(PostingListMaker):
         self.close_event.set()
         while self.count_parent.poll()==False:
             time.sleep(self.sleep_for_result)
-            pass
         self.postlist = self.count_parent.recv()
+
         return self.postlist
 
     def _loop_for_free_process(self):
@@ -100,7 +102,6 @@ class FrequencyPostList(PostingListMaker):
             c = self.count_parent.recv()
             self.result_count += c
             
-
     def get_posting_list(term):
         '''Return the posting list for the given term.'''
         raise NotImplementedError('FrequencyPostList.get_posting_list was not implemented.')
@@ -137,6 +138,7 @@ class PostListMergeProcess(Process):
                self.timer.reset_clock('merge')
                self.merge_postlist(postlist)
                self.count_child.send(1)
+               self.timer.end_clock('merge')
                print 'Merge %s results took %s'%(thread_name, self.timer.show_time('merge', 'hour'))
 
         self.count_child.send(self.postlist)
@@ -150,7 +152,6 @@ class PostListMergeProcess(Process):
                 #never a doc_id exited in the current self.postlist since each result is get from a separated set of document
                 self.postlist[term][doc_id] = postlist[term][doc_id]
                 #print '-----%s, %d, %d'%(term, doc_id, self.postlist[term][doc_id])
-
 
 class PostListBuildProcess(Process):
     def __init__(self, name, docs, parser, result_queue, from_index=None, to_index=None, postlist=None):
@@ -177,7 +178,7 @@ class PostListBuildProcess(Process):
         self.queue.put((self.name, self.postlist), block=False)
 
         self.timer.end_clock('block')
-        print '---%s (handle %d to %d) finised after %s'%(self.name, self.from_index, self.to_index, self.timer.show_time('block', level='hour'))
+        print '---%s (handle %d to %d) finised after %s'%(self.name, self.from_index, self.to_index-1, self.timer.show_time('block', level='hour'))
             
     def add_content(self, doc_id, content):
         for term in self.parser.document_term_iter(content):
@@ -194,7 +195,6 @@ class PostListBuildProcess(Process):
 from ir.utils.config import Config
 from ir.components.indexers.docid_makers.count_id_maker import CountIDMaker
 from ir.components.indexers.parsers.ufal_parser import UFALParser
-
 
 def main():
     config = Config.load_configs(['../../../ir_config.py'], use_default=False, log=False)

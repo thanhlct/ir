@@ -1,5 +1,3 @@
-import pdb
-
 class UFALParser(object):
     def __init__(self, cfg):
         self.ignore_items = []
@@ -9,7 +7,8 @@ class UFALParser(object):
 
     def term_iter(self, path):
         '''Return a iterator over all terms in the document given in the path.'''
-        pass
+        raise NotImplementedError('UFALParser.term_iter was not implemented')
+
     def document_term_iter(self, doc_content):
         lines = doc_content.splitlines()
         for line in lines:

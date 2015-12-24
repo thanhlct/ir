@@ -29,17 +29,4 @@ config={
             'limited_process_number':3,
         },
     },
-    'parser':{
-        'type': None,
-        'debug': True,
-        'SimpleParser':{
-            'temporary_file': as_project_path('private/temporary_files/parser_results.pkl'),
-        },
-        'MultiProcessParser':{
-            'temporary_file': as_project_path('private/temporary_files/parser_results.pkl'),
-            'block_size': 10,
-            'sleep_for_result': 2,
-            'max_thread_used':3,#not supported since RAM too big
-        },
-    },
 }
