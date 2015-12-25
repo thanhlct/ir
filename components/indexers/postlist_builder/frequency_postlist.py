@@ -24,6 +24,7 @@ class FrequencyPostList(PostingListMaker):
     def _read_postlist(self):
         path = self.config['postlist_file']
         if file_exists(path):
+            print 'Read postlist from [%s]'%path
             return file_to_object(path)
         else:
             return None
@@ -36,7 +37,7 @@ class FrequencyPostList(PostingListMaker):
     def build_from_id_maker(self, id_maker, parser):
         self.postlist = self._read_postlist()
         if self.postlist is not None:
-            print '---Read postlist from file'
+            #print '---Read postlist from file'
             return self.postlist
 
         self.timer.start_clock('read_file')

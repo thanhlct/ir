@@ -16,6 +16,7 @@ config={
         'debug': True,
         'CountIDMaker':{
             'document_list_file': as_project_path('private/data/A1/documents.list'),
+            'docid_mapping_file': as_project_path('private/temp/docid_mapping.list'),
         },
     },
     'postlist_maker':{
@@ -27,6 +28,14 @@ config={
             'block_size': 10,
             'sleep_for_result': 2,
             'limited_process_number':3,
+        },
+    },
+    'weight_calculator':{
+        'type': None,
+        'debug': True,
+        'TFIDFWeightCalculator':{
+            'query_scheme': 'nnc',
+            'doc_scheme': 'nnc',
         },
     },
 }

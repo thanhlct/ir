@@ -1,6 +1,7 @@
 import os
 
 from ir.utils.support_functions import deep_copy
+from ir.utils.io_functions import file_exists, file_to_object, object_to_file
 
 class CountIDMaker(object):
     def __init__(self, cfg):
@@ -11,8 +12,27 @@ class CountIDMaker(object):
 
     def make_id_for_paths(self, *paths):
         raise NotImplementedError('You didnt implemented this method!, make id for all document in the list of dicrectoies given')
+   
+    def _read_mapping(self):
+        path = self.config['docid_mapping_file']
+        if file_exists(path):
+            print 'Read docid_mapping from [%s]'%path
+            return file_to_object(path)
+        else:
+            return None
+
+    def _write_mapping(self, id_mapping):
+        path = self.config['docid_mapping_file']
+        print 'Saving docid_mapping result to [%s]'%path
+        object_to_file(id_mapping, path) 
 
     def make_id_from_file(self, document_list_file=None, add_data_path=True):
+        saved_id_mapping = self._read_mapping()
+        if saved_id_mapping is not None:
+            self.id_mapping = saved_id_mapping
+            self.id_keys = self.id_mapping.keys()
+            return
+
         if document_list_file is None:
             document_list_file = self.config['document_list_file']
         with open(document_list_file, 'r') as f:
@@ -27,8 +47,9 @@ class CountIDMaker(object):
                 _, filename = os.path.split(path)
                 filename = filename.split('.')[0]
                 self.id_mapping[count-1]={'path': path, 'filename': filename}
-        self.total_doc_number=count
+        #self.total_doc_number=count
         self.id_keys = self.id_mapping.keys()
+        self._write_mapping(self.id_mapping)
 
     def __getitem__(self, doc_id):
         return self.id_mapping[doc_id]
@@ -41,6 +62,6 @@ class CountIDMaker(object):
 
     def get_sub_id_maker(self, from_id, to_id):
         maker = CountIDMaker(self.full_config)
-        for key in self.id_keys[from_id: to_id+1]:
+        for key in self.id_keys[from_id: to_id]:
             maker.id_mapping[key] = deep_copy(self[key])
         return maker
