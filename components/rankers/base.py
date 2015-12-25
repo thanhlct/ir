@@ -1,9 +1,15 @@
 class QueryResult(object):
-    def __init__(self, docid=None, rank=None, score=None):
+    def __init__(self, docid=None, score=None, rank=None):
         self.docid = docid
-        self.rank = rank
+        self.rank = 0
         self.score = score
 
+    def __str__(self):
+        return '%d\t%d\t%f'%(self.docid, self.rank, self.score)
+
+    def __lt__(self, o):
+        return self.score < o.score
+    
 class WeightCalculator(object):
     def __init__(self, cfg):
         pass
