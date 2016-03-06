@@ -81,7 +81,7 @@ def main():
     global id_maker, postlist
     id_maker = CountIDMaker(config)
     id_maker.make_id_from_file()
-    id_maker = id_maker.get_sub_id_maker(0, 100)
+    #id_maker = id_maker.get_sub_id_maker(0, 100)
 
     postlist_maker = FrequencyPostList(config)
     parser = UFALParser(config)
